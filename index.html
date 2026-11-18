@@ -149,7 +149,7 @@ nav button.on{color:var(--ocean);background:var(--ocean2)}
 .foot{font-size:.74em;color:var(--muted);text-align:center;margin-top:20px;padding:0 10px}
 
 .deskonly{display:none}
-@media (min-width:900px){
+@media (min-width:720px){
  .app{max-width:1240px}
  .top{padding:18px 28px 8px}
  .app>nav{order:1} .app>main{order:2}
@@ -168,7 +168,7 @@ nav button.on{color:var(--ocean);background:var(--ocean2)}
  .cols .colL{position:sticky;top:76px}
  .deskonly{display:block;margin-top:22px}
  .quick{grid-template-columns:repeat(3,1fr)}
- .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+ .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
  .pgrid .place{margin:0}
  #llist{columns:2;column-gap:28px}
  #llist .lrow{break-inside:avoid}
@@ -425,7 +425,7 @@ const badge=(R,sm)=>`<span class="badge${sm?' sm':''}" style="background:${R.c};
 const stopLabel=i=>`${esc(ST[i].n)} <span class="code">${ST[i].id}</span>`;
 
 /* ---------- Cielo del Teide según la hora ---------- */
-function sky(){const W=window.innerWidth>=900,X0=W?-400:0,WW=W?1200:400;const m=now().min,h=m/60;const ph=h<7||h>=19.25?'night':h<8.75?'dawn':h<17.75?'day':'dusk';
+function sky(){const W=window.innerWidth>=720,X0=W?-400:0,WW=W?1200:400;const m=now().min,h=m/60;const ph=h<7||h>=19.25?'night':h<8.75?'dawn':h<17.75?'day':'dusk';
  const P={day:['#4FA9DB','#BFE3F2','#2B4B60','#FFF3C4','#1F6F9E'],dawn:['#8DBDE0','#F6C6A2','#3A4762','#FFE0B0','#3C6E92'],dusk:['#27336B','#F0955A','#2A2139','#FFD27A','#2D3F6E'],night:['#050F1C','#15325A','#0A1524','#E3EBF5','#0B2440']}[ph];
  const p=ph==='night'?((h+3.5)%24)/10:Math.min(1,Math.max(0,(h-6.5)/14));const sx=W?300+p*380:230+p*140,sy=125-Math.sin(p*Math.PI)*85;
  let stars='';if(ph==='night'||ph==='dusk'){let seed=7;const r=()=>(seed=(seed*9301+49297)%233280)/233280;for(let i=0;i<(ph==='night'?(W?150:55):(W?40:14));i++)stars+=`<circle cx="${(X0+r()*WW).toFixed(1)}" cy="${(r()*120).toFixed(1)}" r="${(r()*1.2+.3).toFixed(2)}" fill="#fff" opacity="${(r()*.6+.3).toFixed(2)}"/>`}
@@ -541,7 +541,7 @@ document.addEventListener('input',e=>{const id=e.target.id,v=e.target.value;
  if(id==='tq'){S.tq=v;document.getElementById('tqres').innerHTML=resList(findStops(v),'to')}
  if(id==='lq'){S.lq=v;document.getElementById('llist').innerHTML=lineList(v)}});
 document.getElementById('langSel').addEventListener('change',e=>{S.lang=e.target.value;store.set('lang',S.lang);render()});
-let _wide=window.innerWidth>=900;window.addEventListener('resize',()=>{const w=window.innerWidth>=900;if(w!==_wide){_wide=w;const a=document.activeElement;if(!(a&&a.tagName==='INPUT'))render()}});
+let _wide=window.innerWidth>=720;window.addEventListener('resize',()=>{const w=window.innerWidth>=720;if(w!==_wide){_wide=w;const a=document.activeElement;if(!(a&&a.tagName==='INPUT'))render()}});
 setInterval(()=>{const a=document.activeElement;if(S.tab==='home'&&!(a&&a.tagName==='INPUT'))render()},30000);
 render();
 </script>
