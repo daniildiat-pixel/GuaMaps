@@ -189,6 +189,14 @@ nav button.on{color:var(--ocean);background:var(--ocean2)}
 .embed .top{padding:8px 18px 0}
 .embed main{padding-top:6px}
 .backbar{margin:4px 0 10px}
+.pbanner{position:relative;height:170px;border-radius:22px;overflow:hidden;margin:4px 0 16px;background:linear-gradient(135deg,#0D5C8C,#1f8bb8)}
+.pbanner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pbanner .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,25,45,.78),rgba(5,25,45,.15) 75%)}
+.pbanner .ptxt{position:absolute;left:22px;right:22px;bottom:18px;color:#fff;max-width:620px}
+.pbanner .ptxt b{display:block;font-size:2em;font-weight:800;letter-spacing:-.035em;line-height:1.05}
+.pbanner .ptxt span{display:block;margin-top:6px;opacity:.92;font-size:.95em}
+.pbanner .credit{top:10px;right:10px}
+@media (min-width:720px){.pbanner{height:220px}.pbanner .ptxt b{font-size:2.6em}}
 @media (prefers-reduced-motion:reduce){.live{animation:none}.sw:after{transition:none}}
 </style>
 </head>
@@ -468,6 +476,9 @@ function art(p,i){let k=p.tg.find(g=>['playa','nat','cultura','ocio'].includes(g
  return `<svg viewBox="0 0 400 128" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${A[k]}<rect width="400" height="128" fill="url(#shade)"/><defs><linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></linearGradient></defs></svg>`}
 
 /* ---------- Vistas ---------- */
+function banner(k,title,sub){const p=PH[k];if(!p)return `<h1>${title}</h1><p class="sub">${sub}</p>`;
+ return `<div class="pbanner"><img src="${p.src}" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()"><div class="shade"></div><div class="ptxt"><b>${title}</b><span>${sub}</span></div><a class="credit" href="${p.page}" target="_blank" rel="noopener">${t('photo')}: ${esc(p.a)}, ${esc(p.l)}</a></div>`}
+
 const POPULAR=['2625','9181','7571','5090','7142','7140'].map(id=>BYID.get(id)).filter(x=>x!=null);
 function resList(list,mode){if(!list.length)return'';return `<div class="results">${list.map(s=>`<div class="res" data-act="${mode}" data-v="${s.i}">${icon('stop')}<span class="grow">${esc(s.n)}</span><span class="code">${s.id}</span></div>`).join('')}</div>`}
 
@@ -487,8 +498,8 @@ home(){const {day,min}=now(),sk=sky();window.__sky=sk.svg;const g=min<720?'morni
  return h},
 
 plan(){const field=(k,lab,cls)=>{const v=S[k],q=k==='from'?'fq':'tq';return `<div class="field ${cls}"><span class="dot"></span><label>${lab}</label>${v!=null?`<div class="row" style="gap:6px"><div class="val grow">${stopLabel(v)}</div><button class="mini" data-act="clr" data-v="${k}" aria-label="✕">${icon('x')}</button></div>`:`<input id="${q}" placeholder="${t('searchStop')}" value="${esc(S[q])}" autocomplete="off"><div id="${q}res">${resList(findStops(S[q]),k)}</div>`}</div>`};
- let h=`<h1>${t('plan')}</h1><p class="sub">${t('planSub')}</p><div class="panel"><div class="fields">${field('from',t('from'),'from')}${field('to',t('dest'),'to')}${S.from!=null&&S.to!=null?`<button class="round swap" data-act="swap" aria-label="⇅">${icon('swap')}</button>`:''}</div>
- <button class="btn" style="width:100%;margin:0 0 12px" data-act="go">${t('search')} ${icon('go')}</button></div>`;h=`<div class="cols plan"><div class="colL">${h}</div><div class="colR">`;
+ const bn=banner('teresitas',t('plan'),t('planSub'));let h=`<div class="panel"><div class="fields">${field('from',t('from'),'from')}${field('to',t('dest'),'to')}${S.from!=null&&S.to!=null?`<button class="round swap" data-act="swap" aria-label="⇅">${icon('swap')}</button>`:''}</div>
+ <button class="btn" style="width:100%;margin:0 0 12px" data-act="go">${t('search')} ${icon('go')}</button></div>`;h=bn+`<div class="cols plan"><div class="colL">${h}</div><div class="colR">`;
  if(S.res){if(S.res.length&&S.dd)h+=`<div class="note">${t('tomorrow')}</div>`;
   if(!S.res.length)h+=`<div class="panel empty">${S.from==null||S.to==null?t('pick'):t('noRoute')}</div>`;
   else{h+=`<div class="panel">${S.res.map(r=>{const bus=r.legs.filter(l=>!l.walk),ride=bus.reduce((s,l)=>s+l.arr-l.dep,0);
@@ -499,7 +510,7 @@ plan(){const field=(k,lab,cls)=>{const v=S[k],q=k==='from'?'fq':'tq';return `<di
  return h+`</div></div>`},
 
 places(){const tags=['all','pareja','grupo','sunset','nat','playa','cultura','ocio'];const L=PLACES.filter(p=>S.ptag==='all'||p.tg.includes(S.ptag));
- return `<h1>${t('placesTitle')}</h1><p class="sub">${t('placesSub')}</p><div class="chips" style="margin-bottom:12px">${tags.map(g=>`<button class="chip${S.ptag===g?' on':''}" data-act="ptag" data-v="${g}">${t(g==='all'?'pAll':g)}</button>`).join('')}</div>
+ return banner('masca',t('placesTitle'),t('placesSub'))+`<div class="chips" style="margin-bottom:12px">${tags.map(g=>`<button class="chip${S.ptag===g?' on':''}" data-act="ptag" data-v="${g}">${t(g==='all'?'pAll':g)}</button>`).join('')}</div>
  <div class="pgrid">${L.map(p=>`<article class="place"><div class="art">${art(p,PLACES.indexOf(p))}${PH[p.k]?`<img src="${PH[p.k].src}" alt="${esc(p.n)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.querySelectorAll('.shade,.credit').forEach(e=>e.remove());this.remove()"><div class="shade"></div>`:''}<h2>${esc(p.n)}</h2>${PH[p.k]?`<a class="credit" href="${PH[p.k].page}" target="_blank" rel="noopener">${t('photo')}: ${esc(PH[p.k].a)}, ${esc(PH[p.k].l)}</a>`:''}</div><div class="body">
  <div class="chips wrap" style="margin-bottom:8px">${p.tg.map(g=>`<span class="tag">${t(g)}</span>`).join('')}</div>
  <p>${p.d[S.lang]||p.d.es}</p>
@@ -507,7 +518,7 @@ places(){const tags=['all','pareja','grupo','sunset','nat','playa','cultura','oc
  <div class="row"><button class="btn grow" data-act="howto" data-v="${p.si}">${icon('route')} ${t('howTo')}</button><button class="btn soft grow" data-act="stop" data-v="${p.si}">${icon('clock')} ${t('seeStop')}</button></div></div></article>`).join('')}</div>`},
 
 lines(){if(S.line!=null)return lineDetail(RT[S.line]);
- return `<h1>${t('lines')}</h1><p class="sub">${t('linesSub',{n:ROUTES.length})}</p><label class="search" style="margin-bottom:12px">${icon('search')}<input id="lq" placeholder="${t('searchLine')}" value="${esc(S.lq)}" autocomplete="off"></label><div class="panel" id="llist">${lineList(S.lq)}</div>`},
+ return banner('garachico',t('lines'),t('linesSub',{n:ROUTES.length}))+`<label class="search" style="margin-bottom:12px">${icon('search')}<input id="lq" placeholder="${t('searchLine')}" value="${esc(S.lq)}" autocomplete="off"></label><div class="panel" id="llist">${lineList(S.lq)}</div>`},
 
 settings(){const sw=(k,on)=>`<div class="set"><span>${t(k)}</span><button class="sw${on?' on':''}" data-act="tog" data-v="${k}" aria-pressed="${on}" aria-label="${t(k)}"></button></div>`;
  return `<h1>${t('settings')}</h1><h3>${t('language')}</h3><div class="chips wrap">${[['es','Español'],['en','English'],['de','Deutsch'],['fr','Français'],['it','Italiano']].map(([c,n])=>`<button class="chip${S.lang===c?' on':''}" data-act="lang" data-v="${c}">${n}</button>`).join('')}</div>
